@@ -111,19 +111,19 @@ func (tree *BinTree) Range(start string, end string) <-chan *BinTree {
 	return ch
 }
 
-func Add(tree *BinTree, key string, value interface{}) *BinTree {
+func (tree *BinTree) Add(key string, value interface{}) *BinTree {
 	if tree == nil {
 		return &BinTree{key, value, nil, nil}
 	} else if tree.Key == key {
 		return &BinTree{key, value, tree.left, tree.right}
 	} else if tree.Key < key {
-		return &BinTree{tree.Key, tree.Value, tree.left, Add(tree.right, key, value)}
+		return &BinTree{tree.Key, tree.Value, tree.left, tree.right.Add(key, value)}
 	}
 	
-	return &BinTree{tree.Key, tree.Value, Add(tree.left, key, value), tree.right}
+	return &BinTree{tree.Key, tree.Value, tree.left.Add(key, value), tree.right}
 }
 
-func Remove(tree *BinTree, key string) *BinTree {
+func (tree *BinTree) Remove(key string) *BinTree {
 	if tree == nil {
 		return nil
 	} else if tree.Key == key {
@@ -133,13 +133,13 @@ func Remove(tree *BinTree, key string) *BinTree {
 			return tree.left
 		} else {
 			replaceKey, replaceValue := tree.left.Last()
-			return &BinTree{replaceKey, replaceValue, Remove(tree.left, replaceKey), tree.right}
+			return &BinTree{replaceKey, replaceValue, tree.left.Remove(replaceKey), tree.right}
 		}
 	} else if tree.Key < key {
-		return &BinTree{tree.Key, tree.Value, tree.left, Remove(tree.right, key)}
+		return &BinTree{tree.Key, tree.Value, tree.left, tree.right.Remove(key)}
 	}
 	
-	return &BinTree{tree.Key, tree.Value, Remove(tree.left, key), tree.right}
+	return &BinTree{tree.Key, tree.Value, tree.left.Remove(key), tree.right}
 }
 
 func (tree *BinTree) inspect() {

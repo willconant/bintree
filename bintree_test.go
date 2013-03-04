@@ -4,7 +4,7 @@ import "testing"
 
 func TestAddGet(t *testing.T) {
 	tree := testTree1()
-	tree = Add(tree, "basic_test", "basic_value")
+	tree = tree.Add("basic_test", "basic_value")
 	
 	v, exists := tree.Get("basic_test")
 	if v != "basic_value" {
@@ -18,7 +18,7 @@ func TestAddGet(t *testing.T) {
 
 func TestRemove(t *testing.T) {
 	tree := testTree1()
-	tree = Remove(tree, "lob")
+	tree = tree.Remove("lob")
 	
 	var keys []string
 	for node := range tree.Iter() {
@@ -58,7 +58,7 @@ func testTree1() (tree *BinTree) {
 	keys := []string{"foo", "bar", "zim", "purp", "lob", "gim", "jimmy", "lid", "gam", "zom", "pzz"}
 	
 	for i, key := range keys {
-		tree = Add(tree, key, i)
+		tree = tree.Add(key, i)
 	}
 	
 	return
