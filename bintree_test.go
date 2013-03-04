@@ -54,7 +54,7 @@ func TestRange(t *testing.T) {
 	}
 }
 
-func testTree1() (tree *BinTree) {
+func testTree1() (tree *Tree) {
 	keys := []string{"foo", "bar", "zim", "purp", "lob", "gim", "jimmy", "lid", "gam", "zom", "pzz"}
 	
 	for i, key := range keys {

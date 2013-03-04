@@ -2,14 +2,14 @@ package bintree
 
 import "fmt"
 
-type BinTree struct {
+type Tree struct {
 	Key string
 	Value interface{}
-	left *BinTree
-	right *BinTree
+	left *Tree
+	right *Tree
 }
 
-func (tree *BinTree) Get(key string) (interface{}, bool) {
+func (tree *Tree) Get(key string) (interface{}, bool) {
 	for tree != nil {
 		if key == tree.Key {
 			return tree.Value, true
@@ -22,9 +22,9 @@ func (tree *BinTree) Get(key string) (interface{}, bool) {
 	return nil, false
 }
 
-func (tree *BinTree) First() (string, interface{}) {
+func (tree *Tree) First() (string, interface{}) {
 	if tree == nil {
-		panic("cannot find first key of empty BinTree")
+		panic("cannot find first key of empty Tree")
 	}
 	
 	if tree.left == nil {
@@ -34,9 +34,9 @@ func (tree *BinTree) First() (string, interface{}) {
 	return tree.left.First()
 }
 
-func (tree *BinTree) Last() (string, interface{}) {
+func (tree *Tree) Last() (string, interface{}) {
 	if tree == nil {
-		panic("cannot find last key of empty BinTree")
+		panic("cannot find last key of empty Tree")
 	}
 	
 	if tree.right == nil {
@@ -46,11 +46,11 @@ func (tree *BinTree) Last() (string, interface{}) {
 	return tree.right.Last()
 }
 
-func (tree *BinTree) Iter() <-chan *BinTree {
-	ch := make(chan *BinTree)
+func (tree *Tree) Iter() <-chan *Tree {
+	ch := make(chan *Tree)
 	
-	var visit func(*BinTree)
-	visit = func(node *BinTree) {
+	var visit func(*Tree)
+	visit = func(node *Tree) {
 		if node.left != nil {
 			visit(node.left)
 		}
@@ -72,13 +72,13 @@ func (tree *BinTree) Iter() <-chan *BinTree {
 	return ch
 }
 
-func (tree *BinTree) Range(start string, end string) <-chan *BinTree {
-	ch := make(chan *BinTree)
+func (tree *Tree) Range(start string, end string) <-chan *Tree {
+	ch := make(chan *Tree)
 	
 	started := false
 	
-	var visit func(*BinTree)
-	visit = func(node *BinTree) {
+	var visit func(*Tree)
+	visit = func(node *Tree) {
 		if node.left != nil {
 			visit(node.left)
 		}
@@ -111,19 +111,19 @@ func (tree *BinTree) Range(start string, end string) <-chan *BinTree {
 	return ch
 }
 
-func (tree *BinTree) Add(key string, value interface{}) *BinTree {
+func (tree *Tree) Add(key string, value interface{}) *Tree {
 	if tree == nil {
-		return &BinTree{key, value, nil, nil}
+		return &Tree{key, value, nil, nil}
 	} else if tree.Key == key {
-		return &BinTree{key, value, tree.left, tree.right}
+		return &Tree{key, value, tree.left, tree.right}
 	} else if tree.Key < key {
-		return &BinTree{tree.Key, tree.Value, tree.left, tree.right.Add(key, value)}
+		return &Tree{tree.Key, tree.Value, tree.left, tree.right.Add(key, value)}
 	}
 	
-	return &BinTree{tree.Key, tree.Value, tree.left.Add(key, value), tree.right}
+	return &Tree{tree.Key, tree.Value, tree.left.Add(key, value), tree.right}
 }
 
-func (tree *BinTree) Remove(key string) *BinTree {
+func (tree *Tree) Remove(key string) *Tree {
 	if tree == nil {
 		return nil
 	} else if tree.Key == key {
@@ -133,18 +133,18 @@ func (tree *BinTree) Remove(key string) *BinTree {
 			return tree.left
 		} else {
 			replaceKey, replaceValue := tree.left.Last()
-			return &BinTree{replaceKey, replaceValue, tree.left.Remove(replaceKey), tree.right}
+			return &Tree{replaceKey, replaceValue, tree.left.Remove(replaceKey), tree.right}
 		}
 	} else if tree.Key < key {
-		return &BinTree{tree.Key, tree.Value, tree.left, tree.right.Remove(key)}
+		return &Tree{tree.Key, tree.Value, tree.left, tree.right.Remove(key)}
 	}
 	
-	return &BinTree{tree.Key, tree.Value, tree.left.Remove(key), tree.right}
+	return &Tree{tree.Key, tree.Value, tree.left.Remove(key), tree.right}
 }
 
-func (tree *BinTree) inspect() {
-	var visit func(*BinTree, int) []string
-	visit = func(node *BinTree, level int) []string {
+func (tree *Tree) inspect() {
+	var visit func(*Tree, int) []string
+	visit = func(node *Tree, level int) []string {
 		if node == nil {
 			return nil
 		}
