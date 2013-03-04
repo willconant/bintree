@@ -20,10 +20,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+// Package bintree provides a trivial persistent binary search tree
 package bintree
 
 import "fmt"
 
+// *Tree represents any node in a binary tree including a root node.
+// For most methods, a nil-value of *Tree is a valid tree.
 type Tree struct {
 	Key string
 	Value interface{}
@@ -31,6 +34,9 @@ type Tree struct {
 	right *Tree
 }
 
+// Get searches the tree for the given key. If the key is found, Get returns
+// the associated value and true. If the key is not found, it returns nil
+// and false.
 func (tree *Tree) Get(key string) (interface{}, bool) {
 	for tree != nil {
 		if key == tree.Key {
@@ -44,6 +50,8 @@ func (tree *Tree) Get(key string) (interface{}, bool) {
 	return nil, false
 }
 
+// First returns the left-most key and associated value.
+// First panics if tree is nil.
 func (tree *Tree) First() (string, interface{}) {
 	if tree == nil {
 		panic("cannot find first key of empty Tree")
@@ -56,6 +64,8 @@ func (tree *Tree) First() (string, interface{}) {
 	return tree.left.First()
 }
 
+// Last returns the right-most key and associated value.
+// Last panics if tree is nil.
 func (tree *Tree) Last() (string, interface{}) {
 	if tree == nil {
 		panic("cannot find last key of empty Tree")
@@ -68,6 +78,7 @@ func (tree *Tree) Last() (string, interface{}) {
 	return tree.right.Last()
 }
 
+// Iter returns a channel that will produce every node in the tree in key-order.
 func (tree *Tree) Iter() <-chan *Tree {
 	ch := make(chan *Tree)
 	
@@ -94,6 +105,8 @@ func (tree *Tree) Iter() <-chan *Tree {
 	return ch
 }
 
+// Range returns a channel that will produce every node in the tree in key-order
+// where start <= node.Key < end.
 func (tree *Tree) Range(start string, end string) <-chan *Tree {
 	ch := make(chan *Tree)
 	
@@ -133,6 +146,8 @@ func (tree *Tree) Range(start string, end string) <-chan *Tree {
 	return ch
 }
 
+// Add returns a new tree with the given value associated with the given key.
+// Add DOES NOT modify the original tree.
 func (tree *Tree) Add(key string, value interface{}) *Tree {
 	if tree == nil {
 		return &Tree{key, value, nil, nil}
@@ -145,6 +160,8 @@ func (tree *Tree) Add(key string, value interface{}) *Tree {
 	return &Tree{tree.Key, tree.Value, tree.left.Add(key, value), tree.right}
 }
 
+// Remove returns a new tree with the given key removed.
+// Remove DOES NOT modify the original tree.
 func (tree *Tree) Remove(key string) *Tree {
 	if tree == nil {
 		return nil
